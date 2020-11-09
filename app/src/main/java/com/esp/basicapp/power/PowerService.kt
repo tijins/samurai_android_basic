@@ -34,6 +34,7 @@ class PowerService : Service() {
     }
 
     private fun registerPowerReceiver(){
-        registerReceiver(PowerReceiver(), IntentFilter(Intent.ACTION_POWER_CONNECTED))
+        receiver = PowerReceiver()
+        registerReceiver(receiver, IntentFilter(Intent.ACTION_POWER_CONNECTED))
     }
 }
