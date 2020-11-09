@@ -1,5 +1,8 @@
 <resources>
+    <!-- Main Activity -->
     <string name="app_name">BasicApp</string>
+    <string name="launch_second">SECOND ACTIVITYを起動</string>
+
     <!-- Second Activity -->
     <string name="activity2_name">これはSecondActivityです</string>
 </resources>

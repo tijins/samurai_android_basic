@@ -1,8 +1,10 @@
 package com.esp.basicapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.hello
+import android.widget.Button
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +14,10 @@ class MainActivity : AppCompatActivity() {
 
         Timber.d("onCreate")
 
-        // KTXを導入するとできる
-        hello.text = "ハロー"
+        // 2nd Activityを起動するためのイベント
+        btn_second.setOnClickListener {
+            val intent = Intent(this, SecondActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
