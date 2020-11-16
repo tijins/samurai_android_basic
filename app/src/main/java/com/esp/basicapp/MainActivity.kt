@@ -2,6 +2,7 @@ package com.esp.basicapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import kotlinx.android.synthetic.main.activity_main.hello
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -10,5 +11,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         Timber.d("onCreate")
+
+        // KTXを導入するとできる
+        hello.text = "ハロー"
     }
 }
