@@ -49,22 +49,9 @@ class MainActivity : AppCompatActivity() {
                     }catch (ex:Exception){
                     }
                 }
-                val contentUri: Uri = ContentUris.withAppendedId(
-                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                    cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
-                )
-                Timber.d("uri: $contentUri")
-                load(contentUri)
                 //最初の1件だけで停止
                 break
             }
         }
     }
-
-    private fun load(uri: Uri){
-        contentResolver.openFileDescriptor(uri, "r")?.use {
-            Timber.d(it.fileDescriptor.toString())
-        }
-    }
-
 }
