@@ -1,9 +1,17 @@
 package com.esp.basicapp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
+import android.content.ContentResolver
+import android.content.ContentUris
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.hello
 import timber.log.Timber
+import java.security.spec.ECField
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,5 +22,49 @@ class MainActivity : AppCompatActivity() {
 
         // KTXを導入するとできる
         hello.text = "ハロー"
+        listAudio()
     }
+
+    private fun listAudio(){
+        val permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if(permissionCheck != PackageManager.PERMISSION_GRANTED){
+            Timber.e("No Grants")
+            return
+        }
+
+        contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,   // The content URI of the words table
+            null,                        // The columns to return for each row
+            null,                   // Selection criteria
+            null,      // Selection criteria
+            null                          // The sort order for the returned rows
+        ).use { cursor->
+            if(cursor == null){
+                return
+            }
+            while (cursor.moveToNext()){
+                for (col in cursor.columnNames){
+                    try {
+                        Timber.d("${col}:${cursor.getString(cursor.getColumnIndex(col))}")
+                    }catch (ex:Exception){
+                    }
+                }
+                val contentUri: Uri = ContentUris.withAppendedId(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
+                )
+                Timber.d("uri: $contentUri")
+                load(contentUri)
+                //最初の1件だけで停止
+                break
+            }
+        }
+    }
+
+    private fun load(uri: Uri){
+        contentResolver.openFileDescriptor(uri, "r")?.use {
+            Timber.d(it.fileDescriptor.toString())
+        }
+    }
+
 }
