@@ -45,6 +45,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     // okhttp3 https://square.github.io/okhttp/
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    // Retrofit2
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
     // Coroutines Kotlinを非同期に対応します
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await)
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await)
