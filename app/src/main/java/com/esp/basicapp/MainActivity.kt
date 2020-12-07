@@ -2,6 +2,8 @@ package com.esp.basicapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.esp.basicapp.weather.OpenWeatherMapData
+import com.esp.basicapp.weather.OpenWeatherMapService
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_main.get_weather
 import kotlinx.android.synthetic.main.activity_main.txtTemp
@@ -13,6 +15,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -33,8 +37,9 @@ class MainActivity : AppCompatActivity() {
 
         get_weather.setOnClickListener {
             scope.launch(Dispatchers.Main) {
-                val json = loadWeather()
-                parseJson(json)
+                val weatherData = loadWeatherWithRetrofit()
+                txtWeather.text = weatherData.weather?.get(0)?.main
+                txtTemp.text = getString(R.string.temp_c, weatherData.main?.temp)
             }
         }
     }
@@ -64,5 +69,23 @@ class MainActivity : AppCompatActivity() {
         val main = json.get("main").asJsonObject
         val temp = main.get("temp").asFloat
         txtTemp.text = getString(R.string.temp_c, temp)
+    }
+
+    private suspend fun loadWeatherWithRetrofit():OpenWeatherMapData{
+        return withContext(Dispatchers.IO){
+            // Retrofitライブラリを作ります
+            val service = Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("https://api.openweathermap.org/")
+                .build().create(OpenWeatherMapService::class.java)
+
+            val data = service.weather(
+                WEATHER_API_KEY,
+                "tokyo",
+                "ja",
+                "metric"
+            )
+            data
+        }
     }
 }
