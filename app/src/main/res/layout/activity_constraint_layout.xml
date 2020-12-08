@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConstraintLayoutActivity">
+
+    <Button
+        android:id="@+id/btn_top1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TOP1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_top2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TOP1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_top1" />
+
+    <Button
+        android:id="@+id/btn_left"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="LEFT"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_right"
+        app:layout_constraintTop_toBottomOf="@id/btn_top2" />
+
+    <Button
+        android:id="@+id/btn_right"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="RIGHT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_left"
+        app:layout_constraintTop_toBottomOf="@id/btn_top2" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

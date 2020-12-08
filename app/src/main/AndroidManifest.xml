@@ -13,6 +13,9 @@
         <activity
             android:name=".LinearLayoutActivity"
             android:label="@string/linear_layout_label" />
+        <activity
+            android:name=".ConstraintLayoutActivity"
+            android:label="@string/constraint_layout_label" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
