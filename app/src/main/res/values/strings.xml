@@ -1,3 +1,11 @@
 <resources>
+    <!-- 共通 -->
     <string name="app_name">BasicApp</string>
+
+    <!-- MainActivity -->
+    <string name="main_btn_linear_layout">LINEAR LAYOUT</string>
+
+    <!-- LinearLayoutActivity -->
+    <string name="linear_layout_label">LINEAR LAYOUT</string>
+
 </resources>
