@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.btn_constraint
+import kotlinx.android.synthetic.main.activity_main.btn_homework
 import kotlinx.android.synthetic.main.activity_main.btn_spinner
 import timber.log.Timber
 
@@ -26,6 +27,10 @@ class MainActivity : AppCompatActivity() {
 
         btn_spinner.setOnClickListener {
             startActivity(Intent(this, SpinnerSampleActivity::class.java))
+        }
+
+        btn_homework.setOnClickListener {
+            startActivity(Intent(this, HomeworkActivity::class.java))
         }
     }
 }

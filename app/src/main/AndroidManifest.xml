@@ -19,6 +19,10 @@
         <activity
             android:name=".SpinnerSampleActivity"
             android:label="@string/spinner_label" />
+        <activity
+            android:name=".HomeworkActivity"
+            android:label="@string/homework_label" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

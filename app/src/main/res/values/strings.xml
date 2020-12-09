@@ -6,6 +6,7 @@
     <string name="main_btn_linear_layout">LINEAR LAYOUT</string>
     <string name="main_btn_constraint_layout">CONSTRAINT LAYOUT</string>
     <string name="main_btn_spinner">SPINNER SAMPLE</string>
+    <string name="main_btn_homework">HOMEWORK</string>
 
     <!-- LinearLayoutActivity -->
     <string name="linear_layout_label">LINEAR LAYOUT</string>
@@ -15,4 +16,7 @@
 
     <!-- SpinnerSampleActivity -->
     <string name="spinner_label">SPINNER SAMPLE LAYOUT</string>
+
+    <!-- HomeworkActivity -->
+    <string name="homework_label">宿題</string>
 </resources>
