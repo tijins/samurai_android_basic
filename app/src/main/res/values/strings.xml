@@ -15,4 +15,8 @@
 
     <!-- SpinnerSampleActivity -->
     <string name="spinner_label">SPINNER SAMPLE LAYOUT</string>
+
+    <!-- Item_Personal_Info -->
+    <string name="personal_info_name">名前</string>
+    <string name="personal_info_age">年齢</string>
 </resources>
