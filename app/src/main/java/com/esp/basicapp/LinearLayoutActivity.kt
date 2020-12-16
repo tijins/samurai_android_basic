@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_linear_layout.btn_add
 import kotlinx.android.synthetic.main.activity_linear_layout.list
 import kotlinx.android.synthetic.main.item_personal_info.view.txt_age
 import kotlinx.android.synthetic.main.item_personal_info.view.txt_name
+import timber.log.Timber
 
 class LinearLayoutActivity : AppCompatActivity() {
 
@@ -37,6 +38,11 @@ class LinearLayoutActivity : AppCompatActivity() {
 
         adapter = PersonalInfoAdapter(this)
         list.adapter = adapter
+        list.setOnItemClickListener {
+            adapterView, view, position, id ->
+            val item = adapter.getItem(position)
+            Timber.d("${item?.name}をクリックしました")
+        }
 
 //  きれいな書き方
 //        list.adapter = PersonalInfoAdapter(this).also {
