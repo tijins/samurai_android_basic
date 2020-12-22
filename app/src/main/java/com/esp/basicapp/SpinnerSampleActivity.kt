@@ -6,9 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_spinner_sample.btn_radio
+import kotlinx.android.synthetic.main.activity_spinner_sample.btn_snackbar
+import kotlinx.android.synthetic.main.activity_spinner_sample.btn_snackbar_action
 import kotlinx.android.synthetic.main.activity_spinner_sample.btn_spinner
+import kotlinx.android.synthetic.main.activity_spinner_sample.btn_toast
 import kotlinx.android.synthetic.main.activity_spinner_sample.rb_cat
 import kotlinx.android.synthetic.main.activity_spinner_sample.rb_mobile
 import kotlinx.android.synthetic.main.activity_spinner_sample.spinner_person
@@ -67,6 +72,25 @@ class SpinnerSampleActivity : AppCompatActivity() {
 
         btn_radio.setOnClickListener {
             getRadioValue()
+        }
+
+        btn_toast.setOnClickListener {
+            Toast.makeText(this, "HELLO", Toast.LENGTH_LONG).show()
+        }
+
+        btn_snackbar.setOnClickListener {
+            Snackbar.make(btn_snackbar, R.string.str_hello, Snackbar.LENGTH_SHORT).show()
+        }
+
+        btn_snackbar_action.setOnClickListener {
+            val snackbar = Snackbar.make(btn_snackbar, R.string.str_hello, Snackbar.LENGTH_INDEFINITE)
+
+            snackbar.setAction(R.string.btn_close) {
+                //ここで処理できる
+                Toast.makeText(this, "わかりました", Toast.LENGTH_SHORT).show()
+            }
+
+            snackbar.show()
         }
     }
 

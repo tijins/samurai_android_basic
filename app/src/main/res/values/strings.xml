@@ -1,6 +1,8 @@
 <resources>
     <!-- 共通 -->
     <string name="app_name">BasicApp</string>
+    <string name="btn_close">CLOSE</string>
+    <string name="str_hello">HELLO</string>
 
     <!-- MainActivity -->
     <string name="main_btn_linear_layout">LINEAR LAYOUT</string>
