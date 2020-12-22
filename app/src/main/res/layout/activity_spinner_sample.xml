@@ -31,4 +31,61 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_person" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_animal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_spinner">
+
+        <RadioButton
+            android:id="@+id/rb_dog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="DOG" />
+
+        <RadioButton
+            android:id="@+id/rb_cat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CAT" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/radio_group_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radio_group_animal">
+
+        <RadioButton
+            android:id="@+id/rb_pc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_baseline_laptop_24"
+            android:text="PC" />
+
+        <RadioButton
+            android:id="@+id/rb_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_baseline_phone_android_24"
+            android:text="SMART PHONE" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_radio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GET RADIO"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radio_group_device" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

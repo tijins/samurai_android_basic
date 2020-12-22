@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_spinner_sample.btn_radio
 import kotlinx.android.synthetic.main.activity_spinner_sample.btn_spinner
+import kotlinx.android.synthetic.main.activity_spinner_sample.rb_cat
+import kotlinx.android.synthetic.main.activity_spinner_sample.rb_mobile
 import kotlinx.android.synthetic.main.activity_spinner_sample.spinner_person
 import kotlinx.android.synthetic.main.activity_spinner_sample.spinner_string
 import timber.log.Timber
@@ -61,6 +64,10 @@ class SpinnerSampleActivity : AppCompatActivity() {
         btn_spinner.setOnClickListener {
             getSpinnerValue()
         }
+
+        btn_radio.setOnClickListener {
+            getRadioValue()
+        }
     }
 
     private fun getSpinnerValue() {
@@ -69,5 +76,18 @@ class SpinnerSampleActivity : AppCompatActivity() {
 
         val selectedPerson: PersonalInfo = spinner_person.selectedItem as PersonalInfo
         Timber.d("spinner_person = ${selectedPerson.name}: ${selectedPerson.age}")
+    }
+
+    private fun getRadioValue() {
+        // 参照する時
+        val animal = if (rb_cat.isChecked) {
+            "CAT"
+        } else {
+            "DOG"
+        }
+        Timber.d("animal  = $animal")
+
+        // 設定する時
+        rb_mobile.isChecked = true
     }
 }
