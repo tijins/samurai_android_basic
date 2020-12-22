@@ -14,7 +14,7 @@
     <string name="constraint_layout_label">CONSTRAINT LAYOUT</string>
 
     <!-- SpinnerSampleActivity -->
-    <string name="spinner_label">SPINNER SAMPLE LAYOUT</string>
+    <string name="spinner_label">CONTROLS SAMPLE LAYOUT</string>
 
     <!-- Item_Personal_Info -->
     <string name="personal_info_name">名前</string>
