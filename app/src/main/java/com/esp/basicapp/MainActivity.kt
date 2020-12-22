@@ -1,25 +1,24 @@
 package com.esp.basicapp
 
 import android.content.Intent
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.provider.Settings
 import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
-import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.biometric.BiometricConstants
+import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import java.security.KeyStore
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.btn_crypt
+import kotlinx.android.synthetic.main.activity_main.btn_decrypt
+import kotlinx.android.synthetic.main.activity_main.btn_delete
+import kotlinx.android.synthetic.main.activity_main.hello
 import timber.log.Timber
 import java.nio.charset.Charset
-import java.util.Enumeration
+import java.security.KeyStore
+import java.util.Base64
 import java.util.concurrent.Executor
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -30,14 +29,14 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val KEY_NAME = "bio_key"
+        private const val PREFERENCES_NAME = "pref"
     }
 
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private var canUseBiometrics = false
-    private var encryptedData: ByteArray? = null
-    private var secretKey: SecretKey? = null
     private var iv: ByteArray? = null
+    private var data: ByteArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,36 +47,99 @@ class MainActivity : AppCompatActivity() {
         // KTXを導入するとできる
         hello.text = "ハロー"
 
-        initializeCrypto()
         checkBiometric()
-        btn_login.setOnClickListener {
+        btn_crypt.setOnClickListener {
             if (canUseBiometrics) {
-                val cipher = getCipher()
-                val secretKey = getSecretKey()
-                if (encryptedData == null) {
-                    cipher.init(Cipher.ENCRYPT_MODE, secretKey)
-                    iv = cipher.iv
-                } else {
-                    val ivParameterSpec = IvParameterSpec(iv)
-                    cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec)
-                }
-
-                val promptInfo = BiometricPrompt.PromptInfo.Builder()
-                    .setTitle("Biometric login for my app")
-                    .setSubtitle("Log in using your biometric credential")
-                    .setNegativeButtonText("Use account password")
-                    .build()
-
-                biometricPrompt.authenticate(
-                    promptInfo,
-                    BiometricPrompt.CryptoObject(cipher)
-                )
+                save()
             } else {
                 // Prompts the user to create credentials that your app accepts.
                 val enrollIntent = Intent(Settings.ACTION_SETTINGS).apply {
                 }
                 startActivityForResult(enrollIntent, 0)
             }
+        }
+        btn_decrypt.setOnClickListener {
+            if (canUseBiometrics) {
+                load()
+            } else {
+                // Prompts the user to create credentials that your app accepts.
+                val enrollIntent = Intent(Settings.ACTION_SETTINGS).apply {
+                }
+                startActivityForResult(enrollIntent, 0)
+            }
+        }
+        btn_delete.setOnClickListener {
+            deleteValue()
+        }
+    }
+
+    private fun save() {
+        val cipher = getCipher()
+        val secretKey = getSecretKey()
+
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+        iv = cipher.iv
+        data = null
+
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Biometric login for my app")
+            .setSubtitle("Log in using your biometric credential")
+            .setNegativeButtonText("Use account password")
+            .build()
+
+        biometricPrompt.authenticate(
+            promptInfo,
+            BiometricPrompt.CryptoObject(cipher)
+        )
+    }
+
+    private fun load() {
+        val cipher = getCipher()
+        val secretKey = getSecretKey()
+        loadValue()//iv, dataを読み出す
+
+        val ivParameterSpec = IvParameterSpec(iv)
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec)
+        } catch (e: KeyPermanentlyInvalidatedException) {
+            Toast.makeText(this, "秘密鍵が無効になりました", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Biometric login for my app")
+            .setSubtitle("Log in using your biometric credential")
+            .setNegativeButtonText("Use account password")
+            .build()
+
+        biometricPrompt.authenticate(
+            promptInfo,
+            BiometricPrompt.CryptoObject(cipher)
+        )
+    }
+
+    private fun deleteValue() {
+        getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE).edit().apply {
+            clear()
+            apply()
+        }
+    }
+
+    private fun saveValue(iv: ByteArray, data: ByteArray) {
+        getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE).edit().apply {
+            val base64 = Base64.getEncoder()
+            putString("iv", base64.encodeToString(iv))
+            putString("data", base64.encodeToString(data))
+            apply()
+        }
+    }
+
+    private fun loadValue() {
+        val pref = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE)
+        Base64.getDecoder().also {
+            iv = it.decode(pref.getString("iv", ""))
+            data = it.decode(pref.getString("data", ""))
+            Timber.d("iv=${iv?.joinToString { b -> b.toString(16) }} data=${data?.joinToString { b -> b.toString(16) }}")
         }
     }
 
@@ -87,6 +149,7 @@ class MainActivity : AppCompatActivity() {
             BiometricManager.BIOMETRIC_SUCCESS -> {
                 Timber.d("App can authenticate using biometrics.")
                 canUseBiometrics = true
+                initializeCrypto()
                 initializeBiometrics()
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
@@ -100,18 +163,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeCrypto() {
-        generateSecretKey(
-            KeyGenParameterSpec.Builder(KEY_NAME, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
-                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                .setUserAuthenticationRequired(true)
-                // Invalidate the keys if the user has registered a new biometric
-                // credential, such as a new fingerprint. Can call this method only
-                // on Android 7.0 (API level 24) or higher. The variable
-                // "invalidatedByBiometricEnrollment" is true by default.
-                //.setInvalidatedByBiometricEnrollment(true)
-                .build()
-        )
+        try {
+            generateSecretKey(
+                KeyGenParameterSpec.Builder(KEY_NAME, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                    .setUserAuthenticationRequired(true)
+                    // Invalidate the keys if the user has registered a new biometric
+                    // credential, such as a new fingerprint. Can call this method only
+                    // on Android 7.0 (API level 24) or higher. The variable
+                    // "invalidatedByBiometricEnrollment" is true by default.
+                    //.setInvalidatedByBiometricEnrollment(true)
+                    .build()
+            )
+        } catch (e: KeyPermanentlyInvalidatedException) {
+            Toast.makeText(this, "秘密鍵が無効になりました", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initializeBiometrics() {
@@ -139,14 +206,12 @@ class MainActivity : AppCompatActivity() {
                         "Authentication succeeded!", Toast.LENGTH_SHORT
                     ).show()
 
-                    if (encryptedData == null) {
+                    if (data == null) {
                         val inputData = "hello".toByteArray(Charset.forName("utf-8"))
-                        val encryptedData = result.cryptoObject?.cipher?.doFinal(inputData)?.also {
-                            encryptedData = it
-                        }
-                        Timber.d(encryptedData.contentToString())
+                        data = result.cryptoObject?.cipher?.doFinal(inputData)
+                        saveValue(iv!!, data!!)
                     } else {
-                        val decryptedData = result.cryptoObject?.cipher?.doFinal(encryptedData)
+                        val decryptedData = result.cryptoObject?.cipher?.doFinal(data)
                         Timber.d(decryptedData?.toString(Charset.forName("utf-8")))
                     }
                 }
