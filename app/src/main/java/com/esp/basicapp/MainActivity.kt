@@ -4,10 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.content
-import kotlinx.android.synthetic.main.activity_main.send
-import kotlinx.android.synthetic.main.activity_main.sendto
-import kotlinx.android.synthetic.main.activity_main.subject
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -23,30 +20,14 @@ class MainActivity : AppCompatActivity() {
                 subject.text.toString(),
                 content.text.toString()
             )
-//            sendSend(
-//                subject.text.toString(),
-//                content.text.toString()
-//            )
         }
     }
 
-    private fun sendMail(sendTo:String, subject:String, content:String) {
-        val intent = Intent(Intent.ACTION_SENDTO)
-            .apply {
-                type = "text/plain"
-                data = Uri.parse("mailto:${sendTo}")
-                putExtra(Intent.EXTRA_EMAIL, sendTo)
-                putExtra(Intent.EXTRA_SUBJECT, subject)
-                putExtra(Intent.EXTRA_TEXT, content)
-            }
-        val chooser = Intent.createChooser(intent, "send app")
-        startActivity(chooser)
-    }
-
-    private fun sendSend(subject:String, content:String) {
+    private fun sendMail(mail:String, subject:String, content:String) {
         val intent = Intent(Intent.ACTION_SEND)
             .apply {
                 type = "text/plain"
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(mail))
                 putExtra(Intent.EXTRA_SUBJECT, subject)
                 putExtra(Intent.EXTRA_TEXT, content)
             }
