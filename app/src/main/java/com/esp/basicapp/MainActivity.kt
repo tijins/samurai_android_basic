@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.content
-import kotlinx.android.synthetic.main.activity_main.hello
 import kotlinx.android.synthetic.main.activity_main.send
 import kotlinx.android.synthetic.main.activity_main.sendto
 import kotlinx.android.synthetic.main.activity_main.subject
@@ -18,19 +17,16 @@ class MainActivity : AppCompatActivity() {
 
         Timber.d("onCreate")
 
-        // KTXを導入するとできる
-        hello.text = "ハロー"
-
         send.setOnClickListener {
-//            sendMail(
-//                sendto.text.toString(),
-//                subject.text.toString(),
-//                content.text.toString()
-//            )
-            sendSend(
+            sendMail(
+                sendto.text.toString(),
                 subject.text.toString(),
                 content.text.toString()
             )
+//            sendSend(
+//                subject.text.toString(),
+//                content.text.toString()
+//            )
         }
     }
 
@@ -38,10 +34,10 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_SENDTO)
             .apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(sendTo))
+                data = Uri.parse("mailto:${sendTo}")
+                putExtra(Intent.EXTRA_EMAIL, sendTo)
                 putExtra(Intent.EXTRA_SUBJECT, subject)
                 putExtra(Intent.EXTRA_TEXT, content)
-                selector = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"))
             }
         val chooser = Intent.createChooser(intent, "send app")
         startActivity(chooser)
