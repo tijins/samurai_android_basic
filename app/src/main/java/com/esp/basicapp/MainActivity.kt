@@ -17,6 +17,11 @@ class MainActivity : AppCompatActivity() {
         // 2nd Activityを起動するためのイベント
         btn_second.setOnClickListener {
             val intent = Intent(this, SecondActivity::class.java)
+
+            if(content.text.isNotBlank()){
+                intent.putExtra(SecondActivity.EXTRA_CONTENT, content.text.toString())
+            }
+
             startActivity(intent)
         }
     }
