@@ -1,8 +1,9 @@
 package com.esp.basicapp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.hello
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.btn_kotlin
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +13,8 @@ class MainActivity : AppCompatActivity() {
 
         Timber.d("onCreate")
 
-        // KTXを導入するとできる
-        hello.text = "ハロー"
+        btn_kotlin.setOnClickListener {
+            startActivity(Intent(this, KotlinUsageActivity::class.java))
+        }
     }
 }
