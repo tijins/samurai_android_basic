@@ -1,8 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".KotlinUsageActivity">
 
-</LinearLayout>
+    <Button
+        android:id="@+id/btn_it"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Itについて" />
+
+    <Button
+        android:id="@+id/btn_if"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ifについて" />
+
+    <Button
+        android:id="@+id/btn_static"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CompanionObjectについて" />
+
+    <Button
+        android:id="@+id/btn_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dataクラスについて" />
+
+    <Button
+        android:id="@+id/btn_constructor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="コンストラクタについて" />
+</androidx.appcompat.widget.LinearLayoutCompat>
