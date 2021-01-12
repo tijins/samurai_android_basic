@@ -2,17 +2,24 @@ package com.esp.basicapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.hello
 import timber.log.Timber
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()
+,SampleFragment.SampleFragmentListener
+{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Timber.d("onCreate")
 
-        // KTXを導入するとできる
-        hello.text = "ハロー"
+        val fragment = supportFragmentManager.findFragmentByTag(SampleFragment::class.java.simpleName)
+                ?:SampleFragment.newInstance("suzuki")
+        supportFragmentManager.beginTransaction().replace(R.id.view_root, fragment)
+                .commit()
+    }
+
+    override fun onSave(name: String) {
+        Timber.d(name)
     }
 }
