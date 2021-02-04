@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_sample.btn_ask
+import kotlinx.android.synthetic.main.fragment_sample.btn_ask_with_check
 import kotlinx.android.synthetic.main.fragment_sample.btn_save
 import kotlinx.android.synthetic.main.fragment_sample.txt_name
 
-
 class SampleFragment : Fragment(),
-        ConfirmDialogFragment.DialogResultListener {
+    ConfirmDialogFragment.DialogResultListener {
     companion object {
         private const val ARG_NAME = "name"
 
@@ -39,8 +39,8 @@ class SampleFragment : Fragment(),
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_sample, container, false)
@@ -54,23 +54,30 @@ class SampleFragment : Fragment(),
         btn_save.setOnClickListener {
             // Fragmentの入れ子に対応する
             val listener = parentFragment as? SampleFragmentListener
-                    ?: activity as? SampleFragmentListener
+                ?: activity as? SampleFragmentListener
             listener?.onSave(txt_name.text.toString())
         }
 
         btn_ask.setOnClickListener {
             val dialog = ConfirmDialogFragment.makeDialog("保存しますか？")
             childFragmentManager
-                    .beginTransaction()
-                    .add(dialog, ConfirmDialogFragment::class.java.simpleName)
-                    .commit()
+                .beginTransaction()
+                .add(dialog, ConfirmDialogFragment::class.java.simpleName)
+                .commit()
+        }
+
+        btn_ask_with_check.setOnClickListener {
+            val dialog = ConfirmWithCheckDialogFragment.makeDialog("削除しますか？")
+            childFragmentManager
+                .beginTransaction()
+                .add(dialog, ConfirmDialogFragment::class.java.simpleName)
+                .commit()
         }
     }
 
     override fun onSave() {
         // Fragmentの入れ子に対応する
-        val listener = parentFragment as? SampleFragmentListener
-                ?: activity as? SampleFragmentListener
+        val listener = parentFragment as? SampleFragmentListener ?: activity as? SampleFragmentListener
         listener?.onSave(txt_name.text.toString())
     }
 
