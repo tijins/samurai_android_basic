@@ -1,8 +1,7 @@
 package com.esp.basicapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.hello
+import androidx.appcompat.app.AppCompatActivity
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +11,11 @@ class MainActivity : AppCompatActivity() {
 
         Timber.d("onCreate")
 
-        // KTXを導入するとできる
-        hello.text = "ハロー"
+        val fragment = supportFragmentManager.findFragmentByTag(TabFragment::class.java.simpleName)
+            ?: TabFragment()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment, fragment, TabFragment::class.java.simpleName)
+            .commit()
     }
 }
