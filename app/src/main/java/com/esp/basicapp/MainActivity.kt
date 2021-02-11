@@ -1,9 +1,13 @@
 package com.esp.basicapp
 
 import android.content.Intent
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.btn_play
+import kotlinx.android.synthetic.main.activity_main.btn_select
+import kotlinx.android.synthetic.main.activity_main.btn_stop
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -11,22 +15,34 @@ class MainActivity : AppCompatActivity() {
         private const val REQ_SELECT_AUDIO = 1
     }
 
+    private val mediaPlayer = MediaPlayer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Timber.d("onCreate")
-
-        //Audioを選択
-        val btnSelectAudio = findViewById<Button>(R.id.select_audio)
-        btnSelectAudio.setOnClickListener {
+        btn_select.setOnClickListener {
             selectAudio()
+        }
+        btn_play.setOnClickListener {
+            if (!mediaPlayer.isPlaying) {
+                mediaPlayer.start()
+            }
+        }
+        btn_stop.setOnClickListener {
+            mediaPlayer.stop()
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+    }
+
     private fun selectAudio() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "audio/*"
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "audio/*"
+        }
         startActivityForResult(intent, REQ_SELECT_AUDIO)
     }
 
@@ -41,9 +57,16 @@ class MainActivity : AppCompatActivity() {
         // リクエストコードが複数ある場合は、ここで分岐する（1つなら不要）
         when (requestCode) {
             REQ_SELECT_AUDIO -> {
-                Timber.d("${data?.data}")
-                Timber.d("${data?.data?.path}")
+                Timber.d("Intent.Data : ${data?.data}")
+                data?.data?.let { uri ->
+                    setMediaFile(uri)
+                }
             }
         }
+    }
+
+    private fun setMediaFile(uri: Uri) {
+        mediaPlayer.setDataSource(this, uri)
+        mediaPlayer.prepare()
     }
 }
