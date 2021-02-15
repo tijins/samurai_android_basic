@@ -49,7 +49,11 @@ class SampleFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        txt_name.setText(name)
+        // Activityが破棄されて自動復元された場合は、savedInstanceStateに復元情報が入っている
+        // ユーザーがEditTextを編集している可能性があるので、初期値を入れない
+        if (savedInstanceState == null) {
+            txt_name.setText(name)
+        }
 
         btn_save.setOnClickListener {
             // Fragmentの入れ子に対応する

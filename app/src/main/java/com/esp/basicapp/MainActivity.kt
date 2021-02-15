@@ -14,8 +14,8 @@ class MainActivity : AppCompatActivity()
         Timber.d("onCreate")
 
         val fragment = supportFragmentManager.findFragmentByTag(SampleFragment::class.java.simpleName)
-                ?:SampleFragment.newInstance("suzuki")
-        supportFragmentManager.beginTransaction().replace(R.id.view_root, fragment)
+                ?: SampleFragment.newInstance("suzuki")
+        supportFragmentManager.beginTransaction().replace(R.id.view_root, fragment, SampleFragment::class.java.simpleName)
                 .commit()
     }
 
