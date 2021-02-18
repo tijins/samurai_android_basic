@@ -17,8 +17,13 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.mlkit.vision.barcode.Barcode
 import kotlinx.android.synthetic.main.activity_main.camera_capture_button
 import kotlinx.android.synthetic.main.activity_main.viewFinder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
@@ -39,7 +44,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
-
+    private val job = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
     private var imageCapture: ImageCapture? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,8 +161,8 @@ class MainActivity : AppCompatActivity() {
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
-                    it.setAnalyzer(cameraExecutor, ImageAnalyzer { luma ->
-                        Timber.d("Average luminosity: $luma")
+                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer { barcodes ->
+                        onBarcodeDetected(barcodes)
                     })
                 }
             // Select back camera as a default
@@ -175,6 +181,20 @@ class MainActivity : AppCompatActivity() {
             }
 
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun onBarcodeDetected(barcodes: List<Barcode>) {
+        for (barcode in barcodes) {
+            val bounds = barcode.boundingBox
+            val corners = barcode.cornerPoints
+            val rawValue = barcode.rawValue
+            val valueType = barcode.valueType
+            val value = barcode.displayValue
+            Timber.d("$valueType : $value")
+            coroutineScope.launch {
+                Toast.makeText(this@MainActivity, "$valueType : $value", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun getOutputDirectory(): File {
