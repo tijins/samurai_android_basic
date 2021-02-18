@@ -6,9 +6,11 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Size
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
@@ -22,6 +24,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "CameraXBasic"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 1
+        private const val CAMERA_WIDTH = 640
+        private const val CAMERA_HEIGHT = 480
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
@@ -55,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         camera_capture_button.setOnClickListener {
             takePhoto()
         }
+        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     override fun onDestroy() {
@@ -139,8 +145,20 @@ class MainActivity : AppCompatActivity() {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
-            imageCapture = ImageCapture.Builder().build()
+            // 画像解析する時は、解像度を必要十分まで下げる
+            imageCapture = ImageCapture.Builder()
+                .setTargetResolution(Size(CAMERA_WIDTH, CAMERA_HEIGHT))
+                .build()
 
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setTargetResolution(Size(CAMERA_WIDTH, CAMERA_HEIGHT))
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(cameraExecutor, ImageAnalyzer { luma ->
+                        Timber.d("Average luminosity: $luma")
+                    })
+                }
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -150,7 +168,7 @@ class MainActivity : AppCompatActivity() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
+                    this, cameraSelector, preview, imageCapture, imageAnalyzer
                 )
             } catch (exc: Exception) {
                 Timber.e(exc, "Use case binding failed")
