@@ -1,11 +1,11 @@
 package com.esp.basicapp
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.pm.PackageManager
-import android.media.MediaScannerConnection
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Size
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_CODE_PERMISSIONS = 1
         private const val CAMERA_WIDTH = 640
         private const val CAMERA_HEIGHT = 480
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
     private lateinit var outputDirectory: File
@@ -102,15 +103,18 @@ class MainActivity : AppCompatActivity() {
         val imageCapture = imageCapture ?: return
 
         // Create time-stamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(
-                FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg"
-        )
+        val fileName = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date()) + ".jpg"
 
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpg")
+        }
+
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(
+            contentResolver,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        ).build();
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
@@ -121,18 +125,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                val savedUri = Uri.fromFile(photoFile)
-                val msg = "Photo capture succeeded: $savedUri"
+                val msg = "Photo capture succeeded: ${output.savedUri}"
                 Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                 Timber.d(msg)
-                //ファイルを登録
-                MediaScannerConnection.scanFile(
-                    this@MainActivity,
-                    arrayOf(photoFile.absolutePath),
-                    arrayOf("image/jpg")
-                ) { path, uri ->
-                    Timber.d("register media store $path $uri")
-                }
             }
         })
     }
