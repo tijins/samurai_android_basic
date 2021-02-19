@@ -5,11 +5,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.media.AudioManager
+import android.media.ToneGenerator
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.btn_alert
+import kotlinx.android.synthetic.main.activity_main.btn_beep
 import kotlinx.android.synthetic.main.activity_main.btn_normal
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +35,9 @@ class MainActivity : AppCompatActivity() {
         }
         btn_alert.setOnClickListener {
             notifyAlert()
+        }
+        btn_beep.setOnClickListener {
+            beep()
         }
     }
 
@@ -95,5 +101,11 @@ class MainActivity : AppCompatActivity() {
             }.build()
 
         manager.notify(0, notification)
+    }
+
+    private fun beep() {
+        val toneGenerator = ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME)
+        // 種類、長さms
+        toneGenerator.startTone(ToneGenerator.TONE_SUP_ERROR, 1500)
     }
 }

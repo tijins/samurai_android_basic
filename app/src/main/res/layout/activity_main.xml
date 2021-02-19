@@ -18,4 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="重要通知" />
+
+    <Button
+        android:id="@+id/btn_beep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Beep" />
 </LinearLayout>
