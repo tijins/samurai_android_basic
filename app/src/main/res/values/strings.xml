@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BasicApp</string>
+
+    <string name="first_next">GO Second View</string>
+
+    <string name="second_back">Back</string>
 </resources>
