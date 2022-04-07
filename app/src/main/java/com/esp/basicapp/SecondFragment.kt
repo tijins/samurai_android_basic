@@ -18,8 +18,8 @@ class SecondFragment : Fragment(R.layout.fragment_second) {
 
         binding.fragmentTitle.text = arguments?.getString("title")
 
-        binding.back.setOnClickListener {
-            navController.navigateUp()
+        binding.chart.setOnClickListener {
+            navController.navigate(R.id.action_secondFragment_to_chartFragment)
         }
     }
 }

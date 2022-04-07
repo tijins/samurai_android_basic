@@ -9,10 +9,10 @@
         tools:context=".SecondFragment">
 
         <Button
-            android:id="@+id/back"
+            android:id="@+id/chart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/second_back"
+            android:text="MPAndroidChart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
