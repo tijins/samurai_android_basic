@@ -21,5 +21,8 @@ class SecondFragment : Fragment(R.layout.fragment_second) {
         binding.chart.setOnClickListener {
             navController.navigate(R.id.action_secondFragment_to_chartFragment)
         }
+        binding.barChart.setOnClickListener {
+            navController.navigate(R.id.action_secondFragment_to_barChartFragment)
+        }
     }
 }

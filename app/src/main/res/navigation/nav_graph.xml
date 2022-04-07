@@ -22,10 +22,17 @@
         <action
             android:id="@+id/action_secondFragment_to_chartFragment"
             app:destination="@id/chartFragment" />
+        <action
+            android:id="@+id/action_secondFragment_to_barChartFragment"
+            app:destination="@id/barChartFragment" />
     </fragment>
     <fragment
         android:id="@+id/chartFragment"
         android:name="com.esp.basicapp.ChartFragment"
         android:label="fragment_chart"
         tools:layout="@layout/fragment_chart" />
+    <fragment
+        android:id="@+id/barChartFragment"
+        android:name="com.esp.basicapp.BarChartFragment"
+        android:label="BarChartFragment" />
 </navigation>
